@@ -48,7 +48,11 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         $user->update($request->all());
+        $user = User::find($id);
+        if (!$user){
+            return response()->json(['message' => 'cet utilisateur n existe pas'], 404);
+        }
+        $user->update($request->all());
         return $user;
     }
 
@@ -57,6 +61,10 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
+        $user = User::find($id);
+        if (!$user){
+            return response()->json(['message' => 'cet utilisateur n existe pas'], 404);
+        }
         $user->delete();
         return response()->json(['message' => 'Utilisateur supprimé']);
     }
