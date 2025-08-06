@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Task;
+
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all tasks (with relations).
      */
     public function index()
     {
@@ -16,11 +17,19 @@ class TaskController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the manager's tasks.
+     */
+    public function managerTasks()
+    {
+        return Task::all();
+    }
+
+    /**
+     * Store a newly created task by the manager.
      */
     public function store(Request $request)
     {
-         $request->validate([
+        $request->validate([
             'title' => 'required',
             'assigned_to' => 'required|exists:users,id'
         ]);
@@ -29,49 +38,50 @@ class TaskController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'assigned_to' => $request->assigned_to,
-            'created_by' => $request->user()->id
+            'created_by' => $request->user()->id,
+            'status' => 'pending',
         ]);
 
         return response()->json($task, 201);
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified task.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $task = Task::findOrFail($id); // Correction ici
+        $task = Task::findOrFail($id);
         return $task->load(['creator', 'assignee']);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified task.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $task = Task::findOrFail($id); // Correction ici
+        $task = Task::findOrFail($id);
         $task->update($request->all());
         return response()->json($task);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified task.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        $task = Task::findOrFail($id); // Correction ici
+        $task = Task::findOrFail($id);
         $task->delete();
         return response()->json(['message' => 'Tâche supprimée']);
     }
+
     /**
-     * Mark the specified resource as complete.
+     * Mark the specified task as complete.
      */
     public function markAsComplete($id)
     {
-        $task = \App\Models\Task::findOrFail($id);
+        $task = Task::findOrFail($id);
         $task->status = 'completed';
         $task->save();
-
         return response()->json($task);
     }
 }

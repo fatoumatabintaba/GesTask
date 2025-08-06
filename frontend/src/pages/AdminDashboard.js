@@ -14,7 +14,7 @@ const AdminDashboard = () => {
     const fetchUsers = async () => {
       const token = localStorage.getItem('token')
       const res = await axios.get('http://localhost:8000/api/users', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }, // Correction ici
       })
       setUsers(res.data)
     }
@@ -30,7 +30,9 @@ const AdminDashboard = () => {
           <LogoutButton />
         </div>
 
-        <p className="mb-6 text-gray-700">Bienvenue, <strong>{user?.name}</strong> 👋</p>
+        <p className="mb-6 text-gray-700">
+          Bienvenue, <strong>{user?.name}</strong> 👋
+        </p>
 
         <h2 className="text-xl font-semibold mb-4 text-gray-800">Utilisateurs enregistrés</h2>
         <div className="grid md:grid-cols-2 gap-4">

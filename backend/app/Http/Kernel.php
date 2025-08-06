@@ -67,4 +67,16 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\RoleMiddleware::class,
 
     ];
+
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to specific routes or groups of routes.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        // ...other middleware...
+        'is_manager' => \App\Http\Middleware\IsManager::class,
+    ];
 }

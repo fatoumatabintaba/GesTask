@@ -1,4 +1,3 @@
-// src/pages/Login.js
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -22,9 +21,13 @@ const Login = () => {
         password,
       })
 
-      const { token, user } = res.data
+      // --- MODIFICATION ICI ---
+      // Récupération de access_token au lieu de token
+      const { access_token, user } = res.data
 
-      localStorage.setItem('token', token)
+      // Stockage du token sous "token"
+      localStorage.setItem('token', access_token)
+
       localStorage.setItem('user', JSON.stringify(user))
       setUser(user)
 
