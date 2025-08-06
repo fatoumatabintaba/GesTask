@@ -40,6 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/my-tasks', function (Request $request) {
             return \App\Models\Task::where('assigned_to', $request->user()->id)->get();
         });
+        // Ajout de la route pour marquer une tâche comme terminée (pour corriger l'erreur 404)
+        Route::put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']); // <-- Correction ici
     });
 });
 

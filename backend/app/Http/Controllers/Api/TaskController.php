@@ -60,4 +60,15 @@ class TaskController extends Controller
         $task->delete();
         return response()->json(['message' => 'Tâche supprimée']);
     }
+    /**
+     * Mark the specified resource as complete.
+     */
+    public function markAsComplete($id)
+    {
+        $task = \App\Models\Task::findOrFail($id);
+        $task->status = 'completed';
+        $task->save();
+
+        return response()->json($task);
+    }
 }
