@@ -40,7 +40,8 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-         return $task->load(['creator', 'assignee']);
+        $task = Task::findOrFail($id); // Correction ici
+        return $task->load(['creator', 'assignee']);
     }
 
     /**
@@ -48,7 +49,8 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         $task->update($request->all());
+        $task = Task::findOrFail($id); // Correction ici
+        $task->update($request->all());
         return response()->json($task);
     }
 
@@ -57,6 +59,7 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
+        $task = Task::findOrFail($id); // Correction ici
         $task->delete();
         return response()->json(['message' => 'Tâche supprimée']);
     }
