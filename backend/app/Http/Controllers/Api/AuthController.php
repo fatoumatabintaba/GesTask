@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Notifications\UserRegistered;
 
 class AuthController extends Controller
 {
@@ -27,6 +28,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role ?? 'employee'
         ]);
+
+        $user->notify(new UserRegistered());
 
         return response()->json($user, 201);
     }
