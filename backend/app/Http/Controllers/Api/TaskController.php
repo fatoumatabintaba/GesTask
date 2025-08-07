@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Notifications\TaskAssignedNotification;
 use App\Models\Task;
 
 class TaskController extends Controller
@@ -41,6 +42,8 @@ class TaskController extends Controller
             'created_by' => $request->user()->id,
             'status' => 'pending',
         ]);
+        $employee = User::find($task->employee_id);
+        $employee->notify(new TaskAssignedNotification($task));
 
         return response()->json($task, 201);
     }
@@ -77,11 +80,20 @@ class TaskController extends Controller
     /**
      * Mark the specified task as complete.
      */
-    public function markAsComplete($id)
-    {
-        $task = Task::findOrFail($id);
-        $task->status = 'completed';
-        $task->save();
-        return response()->json($task);
-    }
+public function complete($id)
+{
+    $task = Task::findOrFail($id);
+    $task->completed = true;
+    $task->save();
+
+    // Récupère le manager (créateur de la tâche)
+    $manager = User::find($task->created_by);
+
+    // Notifie le manager
+    $manager->notify(new TaskCompletedNotification($task, Auth::user()));
+
+    return response()->json(['message' => 'Tâche marquée comme terminée.']);
+}
+
+
 }

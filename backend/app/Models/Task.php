@@ -14,6 +14,7 @@ class Task extends Model
         'status',
         'assigned_to',
         'created_by',
+        'manager_id',
     ];
     public function assigne()
     {
@@ -21,6 +22,10 @@ class Task extends Model
     }
     public function creator()
     {
-        return $this->belongs(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
+    public function manager()
+{
+    return $this->belongsTo(User::class, 'manager_id');
+}
 }
