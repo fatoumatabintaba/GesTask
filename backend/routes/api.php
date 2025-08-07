@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TaskController;
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,10 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
             return \App\Models\Task::where('assigned_to', $request->user()->id)->get();
         });
         // Ajout de la route pour marquer une tâche comme terminée (pour corriger l'erreur 404)
-        Route::put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']); // <-- Correction ici
+        Route::put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
     });
 });
-
 
 Route::middleware(['auth:sanctum', 'role:admin,manager'])->get('/dashboard', function () {
     return response()->json(['message' => 'Bienvenue sur le dashboard']);
@@ -61,8 +59,9 @@ Route::middleware(['auth:sanctum', 'is_manager'])->get('/employees', [UserContro
 // Assigner une tâche à un employé
 Route::middleware(['auth:sanctum', 'is_manager'])->post('/tasks', [TaskController::class, 'store']);
 
-// Marquer une tâche comme terminée
+// Marquer une tâche comme terminée (évite le doublon si déjà dans le groupe employee)
 Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+
 
 
 

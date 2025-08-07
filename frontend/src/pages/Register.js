@@ -14,6 +14,7 @@ const Register = () => {
     role: 'employee',
   })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -21,43 +22,17 @@ const Register = () => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleRegister = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-
-    console.log('Données à envoyer:', form) // Debug
-
+    setSuccess('')
     try {
-      const response = await axios.post('/register', form)
-      console.log('Réponse du serveur:', response) // Debug
-      alert('Inscription réussie ! Vous pouvez maintenant vous connecter.')
-      navigate('/login')
+      await axios.post('/register', form)
+      setSuccess("Inscription réussie ! Vérifiez votre email.")
+      // Optionnel : navigate('/login')
     } catch (err) {
-      console.error('Erreur complète:', err) // Debug
-      console.error('Réponse du serveur:', err.response) // Debug
-      
-      if (err.response) {
-        // Le serveur a répondu avec un code d'erreur
-        if (err.response.status === 422) {
-          // Erreurs de validation
-          const validationErrors = err.response.data.errors
-          if (validationErrors) {
-            const errorMessages = Object.values(validationErrors).flat()
-            setError(errorMessages.join('. '))
-          } else {
-            setError(err.response.data.message || 'Erreurs de validation')
-          }
-        } else {
-          setError(`Erreur ${err.response.status}: ${err.response.data.message || 'Erreur inconnue'}`)
-        }
-      } else if (err.request) {
-        // La requête a été faite mais pas de réponse
-        setError('Impossible de contacter le serveur. Vérifiez que le backend est démarré.')
-      } else {
-        // Autre erreur
-        setError(`Erreur: ${err.message}`)
-      }
+      setError("Erreur lors de l'inscription.")
     } finally {
       setLoading(false)
     }
@@ -70,13 +45,10 @@ const Register = () => {
           Inscription GesTask
         </h2>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <p className="text-sm">{error}</p>
-          </div>
-        )}
+        {error && <div className="text-red-600">{error}</div>}
+        {success && <div className="text-green-600">{success}</div>}
 
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleSubmit}>
           <Label>Nom</Label>
           <Input
             name="name"
