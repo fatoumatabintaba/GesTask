@@ -42,7 +42,8 @@ class TaskController extends Controller
             'created_by' => $request->user()->id,
             'status' => 'pending',
         ]);
-        $employee = User::find($task->employee_id);
+           $employee = User::find($task->assigned_to);
+        // $employee = User::find($task->employee_id);
         $employee->notify(new TaskAssignedNotification($task));
 
         return response()->json($task, 201);
