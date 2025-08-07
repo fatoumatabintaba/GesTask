@@ -9,6 +9,8 @@ import { ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline'
 
 const EmployeeDashboard = () => {
   const [tasks, setTasks] = useState([])
+  const [success, setSuccess] = useState('')
+  const [error, setError] = useState('')
   const { user } = useAuth()
 
   useEffect(() => {
@@ -24,17 +26,24 @@ const EmployeeDashboard = () => {
   const pendingTasks = tasks.filter((t) => t.status !== 'completed')
 
   const markAsDone = async (taskId) => {
+    setSuccess('')
+    setError('')
     const token = localStorage.getItem('token')
-    await axios.put(
-      `http://localhost:8000/api/tasks/${taskId}/complete`, // Correction ici
-      {},
-      { headers: { Authorization: `Bearer ${token}` } } // Correction ici
-    )
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId ? { ...task, status: 'completed' } : task
+    try {
+      await axios.put(
+        `http://localhost:8000/api/tasks/${taskId}/complete`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
       )
-    )
+      setSuccess("Tâche terminée ! Le manager sera notifié par email.")
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === taskId ? { ...task, status: 'completed' } : task
+        )
+      )
+    } catch (err) {
+      setError("Erreur lors de la validation de la tâche.")
+    }
   }
 
   return (
@@ -48,6 +57,9 @@ const EmployeeDashboard = () => {
         <p className="mb-6 text-gray-700">
           Bienvenue, <strong>{user?.name}</strong> 👋
         </p>
+
+        {success && <div className="text-green-600">{success}</div>}
+        {error && <div className="text-red-600">{error}</div>}
 
         <h2 className="text-xl font-semibold mb-4 text-gray-800">
           Tâches à réaliser

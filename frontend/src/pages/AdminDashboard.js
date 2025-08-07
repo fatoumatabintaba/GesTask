@@ -9,17 +9,27 @@ import { UserGroupIcon } from '@heroicons/react/24/solid'
 const AdminDashboard = () => {
   const { user } = useAuth()
   const [users, setUsers] = useState([])
+  const [tasks, setTasks] = useState([])
 
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem('token')
       const res = await axios.get('http://localhost:8000/api/users', {
-        headers: { Authorization: `Bearer ${token}` }, // Correction ici
+        headers: { Authorization: `Bearer ${token}` },
       })
       setUsers(res.data)
     }
 
+    const fetchTasks = async () => {
+      const token = localStorage.getItem('token')
+      const res = await axios.get('http://localhost:8000/api/tasks', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setTasks(res.data)
+    }
+
     fetchUsers()
+    fetchTasks()
   }, [])
 
   return (
@@ -46,6 +56,24 @@ const AdminDashboard = () => {
                 </span>
               </div>
               <UserGroupIcon className="h-6 w-6 text-gray-400" />
+            </Card>
+          ))}
+        </div>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4 text-gray-800">Toutes les tâches</h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          {tasks.map((task) => (
+            <Card key={task.id} className="flex flex-col justify-between">
+              <div>
+                <h3 className="font-semibold text-lg text-gray-800">{task.title}</h3>
+                <p className="text-sm text-gray-600">{task.description}</p>
+                <span className="inline-block mt-1 px-2 py-1 text-xs font-medium rounded bg-gray-200 text-gray-700">
+                  {task.status}
+                </span>
+                <div className="text-xs text-gray-500 mt-1">
+                  Assignée à : {task.assigned_to}
+                </div>
+              </div>
             </Card>
           ))}
         </div>

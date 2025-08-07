@@ -5,5 +5,6 @@ export default axios.create({
   baseURL: 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/json',
+    // Ajoute d'autres headers si besoin
   },
 })
