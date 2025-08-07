@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TaskController;
+use Illuminate\Support\Facades\Mail;
 
 
 /*
@@ -52,5 +53,20 @@ Route::middleware(['auth:sanctum', 'role:admin,manager'])->get('/dashboard', fun
 
 Route::middleware(['auth:sanctum', 'role:admin'])->get('/users', [UserController::class, 'index']);
 
+
+Route::post('/send-email', function (Request $request) {
+    $data = $request->validate([
+        'to' => 'required|email',
+        'subject' => 'required|string',
+        'message' => 'required|string',
+    ]);
+
+    Mail::raw($data['message'], function ($message) use ($data) {
+        $message->to($data['to'])
+                ->subject($data['subject']);
+    });
+
+    return response()->json(['message' => 'Email envoyé avec succès']);
+});
 
 
