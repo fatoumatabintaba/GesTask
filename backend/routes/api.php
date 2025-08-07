@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TaskController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -44,10 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+
 Route::middleware(['auth:sanctum', 'role:admin,manager'])->get('/dashboard', function () {
     return response()->json(['message' => 'Bienvenue sur le dashboard']);
 });
 
+// Liste des utilisateurs pour admin
 Route::middleware(['auth:sanctum', 'role:admin'])->get('/users', [UserController::class, 'index']);
 
 // Liste des tâches du manager
@@ -59,9 +62,8 @@ Route::middleware(['auth:sanctum', 'is_manager'])->get('/employees', [UserContro
 // Assigner une tâche à un employé
 Route::middleware(['auth:sanctum', 'is_manager'])->post('/tasks', [TaskController::class, 'store']);
 
-// Marquer une tâche comme terminée (évite le doublon si déjà dans le groupe employee)
+// Marquer une tâche comme terminée
 Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
-
 
 
 
