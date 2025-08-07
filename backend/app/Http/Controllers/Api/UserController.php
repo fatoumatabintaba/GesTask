@@ -26,9 +26,11 @@ class UserController extends Controller
         'password' => 'required|string|min:6|confirmed',
         'role' => 'required|in:admin,manager,employee'
        ]);
-       $user->notify(new UserRegistered($user));
+
+
        $validation['password'] = bcrypt($validation['password']);
        $user = User::create(($validation));
+       $user->notify(new UserRegistered($user));
        return response()->json($user, 201);
     }
 

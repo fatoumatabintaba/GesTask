@@ -13,6 +13,8 @@ const ManagerDashboard = () => {
   const [employees, setEmployees] = useState([])
   const [newTask, setNewTask] = useState({ title: '', description: '', employeeId: '' })
   const { user } = useAuth()
+  const [success, setSuccess] = useState('')
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -30,12 +32,22 @@ const ManagerDashboard = () => {
   // Assigner une tâche à un employé
   const assignTask = async (e) => {
     e.preventDefault()
+    setSuccess('')
+    setError('')
     const token = localStorage.getItem('token')
-    await axios.post('http://localhost:8000/api/tasks', newTask, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    setNewTask({ title: '', description: '', employeeId: '' })
-    // Optionnel : rafraîchir la liste des tâches
+    try {
+      await axios.post('http://localhost:8000/api/tasks', {
+        title: newTask.title,
+        description: newTask.description,
+        assigned_to: newTask.employeeId
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      setSuccess("Tâche assignée ! L'employé recevra un email.")
+      setNewTask({ title: '', description: '', employeeId: '' })
+    } catch (err) {
+      setError("Erreur lors de l'assignation.")
+    }
   }
 
   const markAsDone = async (taskId) => {
@@ -104,6 +116,8 @@ const ManagerDashboard = () => {
         </ul>
 
         <h2 className="text-xl font-semibold mb-4 text-gray-800">Assigner une tâche</h2>
+        {success && <div className="text-green-600">{success}</div>}
+        {error && <div className="text-red-600">{error}</div>}
         <form onSubmit={assignTask} className="bg-white p-4 rounded-lg shadow-md mb-8">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <input

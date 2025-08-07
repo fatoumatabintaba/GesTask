@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TaskController;
-use Illuminate\Support\Facades\Mail;
 
 
 /*
@@ -42,11 +41,11 @@ Route::middleware('auth:sanctum')->group(function () {
             return \App\Models\Task::where('assigned_to', $request->user()->id)->get();
         });
         // Ajout de la route pour marquer une tâche comme terminée (pour corriger l'erreur 404)
-        Route::put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']); // <-- Correction ici
+        Route::put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
     });
 });
 
-// Dashboard admin/manager
+
 Route::middleware(['auth:sanctum', 'role:admin,manager'])->get('/dashboard', function () {
     return response()->json(['message' => 'Bienvenue sur le dashboard']);
 });
@@ -63,21 +62,8 @@ Route::middleware(['auth:sanctum', 'is_manager'])->get('/employees', [UserContro
 // Assigner une tâche à un employé
 Route::middleware(['auth:sanctum', 'is_manager'])->post('/tasks', [TaskController::class, 'store']);
 
-// Marquer une tâche comme terminée (doublon supprimé, gardez la version dans le groupe employee)
- 
-Route::post('/send-email', function (Request $request) {
-    $data = $request->validate([
-        'to' => 'required|email',
-        'subject' => 'required|string',
-        'message' => 'required|string',
-    ]);
+// Marquer une tâche comme terminée
+Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
 
-    Mail::raw($data['message'], function ($message) use ($data) {
-        $message->to($data['to'])
-                ->subject($data['subject']);
-    });
-
-    return response()->json(['message' => 'Email envoyé avec succès']);
-});
 
 
