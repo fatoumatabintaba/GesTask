@@ -68,4 +68,11 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'Utilisateur supprimé']);
     }
+    /**
+     * Display a listing of employees.
+     */
+    public function employees()
+    {
+        return User::where('role', 'employee')->get();
+    }
 }

@@ -53,6 +53,18 @@ Route::middleware(['auth:sanctum', 'role:admin,manager'])->get('/dashboard', fun
 
 Route::middleware(['auth:sanctum', 'role:admin'])->get('/users', [UserController::class, 'index']);
 
+// Liste des tâches du manager
+Route::middleware(['auth:sanctum', 'is_manager'])->get('/manager-tasks', [TaskController::class, 'managerTasks']);
+
+// Liste des employés
+Route::middleware(['auth:sanctum', 'is_manager'])->get('/employees', [UserController::class, 'employees']);
+
+// Assigner une tâche à un employé
+Route::middleware(['auth:sanctum', 'is_manager'])->post('/tasks', [TaskController::class, 'store']);
+
+// Marquer une tâche comme terminée
+Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+
 
 Route::post('/send-email', function (Request $request) {
     $data = $request->validate([
