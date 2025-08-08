@@ -35,7 +35,7 @@ class TaskAssignedNotification extends Notification
     public function toMail( $notifiable)
     {
         return (new MailMessage)
-                    ->subject('Nouvelle tâche assignée')
+            ->subject('Nouvelle tâche assignée')
             ->greeting('Bonjour ' . $notifiable->name)
             ->line('Une nouvelle tâche vous a été assignée :')
             ->line('Tâche : ' . $this->task->titre)
