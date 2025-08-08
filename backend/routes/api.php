@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TaskController;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\UserRegistered;
 
 
 /*
@@ -79,7 +81,11 @@ Route::middleware(['auth:sanctum', 'is_manager'])->get('/employees', [UserContro
 Route::middleware(['auth:sanctum', 'is_manager'])->post('/tasks', [TaskController::class, 'store']);
 
 // Marquer une tâche comme terminée
-Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+// Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/tasks/{id}/complete', [TaskController::class, 'complete']);
+});
+
 
 
 

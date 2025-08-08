@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Notifications\UserRegistered;
 
 
 use App\Models\User;
@@ -28,6 +29,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role ?? 'employee'
         ]);
+        $user->notify(new \App\Notifications\UserRegistered($user)); // Correction ici
 
         $user->notify(new UserRegistered());
 
