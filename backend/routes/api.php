@@ -80,7 +80,9 @@ Route::middleware(['auth:sanctum', 'is_manager'])->get('/employees', [UserContro
 Route::middleware(['auth:sanctum', 'is_manager'])->post('/tasks', [TaskController::class, 'store']);
 
 // Marquer une tâche comme terminée
-// Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+Route::patch('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+
 
 
 

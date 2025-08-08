@@ -81,20 +81,37 @@ class TaskController extends Controller
     /**
      * Mark the specified task as complete.
      */
-public function complete($id)
+    public function complete($id)
+    {
+        $task = Task::findOrFail($id);
+        $task->status = 'completed';
+        $task->save();
+
+        $manager = User::find($task->created_by);
+        if ($manager) {
+            $manager->notify(new \App\Notifications\TaskCompletedNotification($task, $manager));
+        }
+
+        return response()->json(['message' => 'Tâche marquée comme terminée']);
+    }
+    public function markAsComplete($id)
 {
     $task = Task::findOrFail($id);
+
+    // Vérifier si l'utilisateur a le droit de compléter cette tâche
+    if (auth()->user()->role === 'manager' && $task->assigned_by !== auth()->id()) {
+        return response()->json(['error' => 'Vous ne pouvez pas compléter cette tâche'], 403);
+    }
+
     $task->status = 'completed';
     $task->save();
 
-    // Notifier le manager
-    $manager = User::find($task->created_by);
-    if ($manager) {
-        $manager->notify(new \App\Notifications\TaskCompletedNotification($task));
-    }
-
-    return response()->json(['message' => 'Tâche marquée comme terminée']);
+    return response()->json([
+        'message' => 'Tâche marquée comme terminée',
+        'task' => $task
+    ]);
 }
+
 
 
 }

@@ -11,15 +11,15 @@ class TaskCompletedNotification extends Notification
 {
     // use Queueable;
     public $task;
-    public $employee;
+    public $manager;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($task, $employee)
+    public function __construct($task, $manager)
     {
        $this->task = $task;
-       $this->employee = $employee;
+       $this->manager = $manager;
     }
 
     /**
@@ -40,7 +40,7 @@ class TaskCompletedNotification extends Notification
         return (new MailMessage)
             ->subject('Tâche terminée')
             ->greeting('Bonjour ' . $notifiable->name)
-            ->line($this->employee->name . ' a terminé la tâche : ' . $this->task->title)
+            ->line($this->manager->name . ' a terminé la tâche : ' . $this->task->title)
             ->line('Consultez les détails dans votre tableau de bord.');
     }
 
