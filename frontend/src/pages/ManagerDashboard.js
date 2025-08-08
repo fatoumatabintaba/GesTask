@@ -47,6 +47,7 @@ const ManagerDashboard = () => {
       setNewTask({ title: '', description: '', employeeId: '' })
     } catch (err) {
       setError("Erreur lors de l'assignation.")
+      console.log(err.response?.data || err.message)
     }
   }
 
