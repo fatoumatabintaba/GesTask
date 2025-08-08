@@ -20,13 +20,13 @@ const ManagerDashboard = () => {
     const token = localStorage.getItem('token')
     // Récupère les tâches du manager
     axios.get('http://localhost:8000/api/manager-tasks', {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` }, // Correction ici
     }).then(res => setTasks(res.data))
 
-    // Récupère la liste des employés
-    axios.get('http://localhost:8000/api/employees', {
-      headers: { Authorization: `Bearer ${token}` },
-    }).then(res => setEmployees(res.data))
+    axios.get('http://localhost:8000/api/employees',
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(res => setEmployees(res.data))
   }, [])
 
   // Assigner une tâche à un employé
