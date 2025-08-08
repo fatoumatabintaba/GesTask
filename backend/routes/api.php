@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/my-tasks', function (Request $request) {
             return \App\Models\Task::where('assigned_to', $request->user()->id)->get();
         });
-        Route::put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
+        Route::put('/tasks/{id}/complete', [TaskController::class, 'complete']);
     });
 });
 
@@ -81,9 +81,6 @@ Route::middleware(['auth:sanctum', 'is_manager'])->post('/tasks', [TaskControlle
 
 // Marquer une tâche comme terminée
 // Route::middleware(['auth:sanctum'])->put('/tasks/{id}/complete', [TaskController::class, 'markAsComplete']);
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/tasks/{id}/complete', [TaskController::class, 'complete']);
-});
 
 
 

@@ -41,6 +41,7 @@ const EmployeeDashboard = () => {
       )
     } catch (err) {
       setError("Erreur lors de la validation de la tâche.")
+      console.log(err.response?.data || err.message)
     }
   }
 
