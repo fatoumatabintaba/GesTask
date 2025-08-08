@@ -84,16 +84,16 @@ class TaskController extends Controller
 public function complete($id)
 {
     $task = Task::findOrFail($id);
-    $task->completed = true;
+    $task->status = 'completed';
     $task->save();
 
-    // Récupère le manager (créateur de la tâche)
+    // Notifier le manager
     $manager = User::find($task->created_by);
+    if ($manager) {
+        $manager->notify(new \App\Notifications\TaskCompletedNotification($task));
+    }
 
-    // Notifie le manager
-    $manager->notify(new TaskCompletedNotification($task, Auth::user()));
-
-    return response()->json(['message' => 'Tâche marquée comme terminée.']);
+    return response()->json(['message' => 'Tâche marquée comme terminée']);
 }
 
 

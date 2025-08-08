@@ -15,11 +15,9 @@ const EmployeeDashboard = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    axios
-      .get('http://localhost:8000/api/my-tasks', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setTasks(res.data))
+    axios.get('http://localhost:8000/api/my-tasks', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => setTasks(res.data))
   }, [])
 
   const completedTasks = tasks.filter((t) => t.status === 'completed')
