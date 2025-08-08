@@ -55,4 +55,5 @@ class TaskCompletedNotification extends Notification
             //
         ];
     }
+    
 }

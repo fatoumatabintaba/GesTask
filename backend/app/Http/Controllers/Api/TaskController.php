@@ -105,7 +105,7 @@ class TaskController extends Controller
 
     $task->status = 'completed';
     $task->save();
-
+    \Mail::to($manager->email)->send(new \App\Mail\TaskCompletedMail($task));
     return response()->json([
         'message' => 'Tâche marquée comme terminée',
         'task' => $task
